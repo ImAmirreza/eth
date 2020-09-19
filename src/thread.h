@@ -19,6 +19,7 @@
 #pragma once
 
 #include <setjmp.h>
+#include <stdbool.h>
 #include <stdint.h>
 
 #include "board.h"
@@ -42,14 +43,16 @@ struct Thread {
     uint16_t bestMoves[MAX_MOVES];
     uint16_t ponderMoves[MAX_MOVES];
 
-    int contempt;
-    int depth, seldepth;
+    int contempt, pknndepth;
+    int depth, seldepth, height;
     uint64_t nodes, tbhits;
 
     int *evalStack, _evalStack[STACK_SIZE];
     uint16_t *moveStack, _moveStack[STACK_SIZE];
     int *pieceStack, _pieceStack[STACK_SIZE];
+
     Undo undoStack[STACK_SIZE];
+    bool pknnchanged[STACK_SIZE];
 
     // ALIGN64 EvalTable evtable;
     // ALIGN64 PKTable pktable;
@@ -59,6 +62,8 @@ struct Thread {
     ALIGN64 HistoryTable history;
     ALIGN64 CaptureHistoryTable chistory;
     ALIGN64 ContinuationTable continuation;
+
+    ALIGN64 float pknnlayer1[STACK_SIZE][PKNETWORK_LAYER1];
 
     int index, nthreads;
     Thread *threads;
