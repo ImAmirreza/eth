@@ -58,7 +58,7 @@ int main(){
     initalizePSQT();
     initalizeMasks();
     initalizeBoard(&(info.board), startPos);
-    initalizeTranspositionTable(&Table, 16);
+    initalizeTranspositionTable(&Table, 1);
     clearHistory(History);
     
     #ifdef TUNE

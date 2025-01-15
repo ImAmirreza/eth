@@ -32,14 +32,14 @@ void initalizeTranspositionTable(TransTable * table, uint64_t megabytes){
     
     // Default table size uses a 16bit key, which
     // results in a table using 16MB of memory.
-    uint64_t keySize = 16ull;
+    uint64_t keySize = 8ull;
     
     // Determine the keysize for the first power of
     // two less than than or equal to megaBytes. We
     // assume here that every bucket is 256 bits
     assert(sizeof(TransBucket) == 32);
-    for (;1ull << (keySize + 5) <= megabytes << 20 ; keySize++);
-    keySize -= 1;
+    // for (;1ull << (keySize + 5) <= megabytes << 20 ; keySize++);
+    // keySize -= 1;
     
     // Setup Table's data members
     table->buckets = calloc(1 << keySize, sizeof(TransBucket));
@@ -152,6 +152,7 @@ void initalizePawnTable(PawnTable * ptable){
 
 void destoryPawnTable(PawnTable * ptable){
     free(ptable->entries);
+    printf("Pawns table free\n");
 }
 
 PawnEntry * getPawnEntry(PawnTable * ptable, uint64_t phash){
