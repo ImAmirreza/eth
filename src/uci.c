@@ -33,7 +33,6 @@
 #include "movegen.h"
 #include "psqt.h"
 #include "search.h"
-#include "texel.h"
 #include "thread.h"
 #include "time.h"
 #include "transposition.h"
@@ -44,7 +43,7 @@
 
 extern int MoveOverhead; // Defined by Time.c
 
-extern unsigned TB_PROBE_DEPTH; // Defined by Syzygy.c
+// extern unsigned TB_PROBE_DEPTH; // Defined by Syzygy.c
 
 extern volatile int ABORT_SIGNAL; // For killing active search
 
@@ -59,7 +58,7 @@ int main(int argc, char **argv) {
     pthread_t pthreadsgo;
 
     int nthreads = argc > 3 ? atoi(argv[3]) : 1;
-    int megabytes = argc > 4 ? atoi(argv[4]) : 16;
+    int megabytes = argc > 4 ? atoi(argv[4]) : 1;
 
     // Initialize the core components of Ethereal
     initAttacks();
@@ -67,7 +66,7 @@ int main(int argc, char **argv) {
     initMasks();
     initializeZorbist();
     initSearch();
-
+    printf("Init TT\n");
     // Default to 16MB TT
     initTT(megabytes);
 
@@ -130,15 +129,6 @@ int main(int argc, char **argv) {
                 printf("info string set MoveOverhead to %d\n", MoveOverhead);
             }
 
-            if (stringStartsWith(str, "setoption name SyzygyPath value ")){
-                ptr = str + strlen("setoption name SyzygyPath value ");
-                tb_init(ptr); printf("info string set SyzygyPath to %s\n", ptr);
-            }
-
-            if (stringStartsWith(str, "setoption name SyzygyProbeDepth value ")){
-                TB_PROBE_DEPTH = atoi(str + strlen("setoption name SyzygyProbeDepth value "));
-                printf("info string set SyzygyProbeDepth to %u\n", TB_PROBE_DEPTH);
-            }
 
             fflush(stdout);
         }
@@ -155,7 +145,9 @@ int main(int argc, char **argv) {
             strncpy(threadsgo.str, str, 512);
             threadsgo.threads = threads;
             threadsgo.board = &board;
-            pthread_create(&pthreadsgo, NULL, &uciGo, &threadsgo);
+            uciGo(&threadsgo);
+            // pthread_create(&pthreadsgo, NULL, &uciGo, &threadsgo);
+            // resetThreadPool(threads);
         }
 
         else if (stringEquals(str, "stop")){

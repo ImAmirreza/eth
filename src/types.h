@@ -42,7 +42,7 @@ enum {
 };
 
 enum {
-    MAX_PLY = 128,
+    MAX_PLY = 64,
     MAX_MOVES = 256
 };
 

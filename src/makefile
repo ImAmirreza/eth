@@ -16,7 +16,7 @@
 
 CC      = gcc
 CCDROID = arm-linux-gnueabi-gcc
-SRC     = *.c fathom/tbprobe.c
+SRC     = *.c
 LIBS    = -lpthread -lm
 EXE     = Ethereal
 
@@ -26,7 +26,7 @@ RFLAGS = -DNDEBUG -O3 $(WFLAGS) -flto -static
 AFLAGS = -DNDEBUG -O3 $(WFLAGS) -march=armv7 -flto -static
 TFLAGS = -DNDEBUG -O3 $(WFLAGS) -march=native -flto -fopenmp -DTUNE
 PFLAGS = -DNDEBUG -O0 $(WFLAGS) -p -pg
-DFLAGS = -O0 $(WFLAGS)
+DFLAGS = -O0 $(WFLAGS) -g -fsanitize=address
 
 POPCNTFLAGS = -DUSE_POPCNT -msse3 -mpopcnt
 PEXTFLAGS   = $(POPCNTFLAGS) -DUSE_PEXT -mbmi2
