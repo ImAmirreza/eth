@@ -16,7 +16,7 @@
 
 CC      = gcc
 CCDROID = arm-linux-gnueabi-gcc
-SRC     = *.c fathom/tbprobe.c
+SRC     = *.c 
 LIBS    = -lpthread -lm
 EXE     = Ethereal
 

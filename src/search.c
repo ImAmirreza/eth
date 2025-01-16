@@ -30,12 +30,10 @@
 #include "board.h"
 #include "castle.h"
 #include "evaluate.h"
-#include "fathom/tbprobe.h"
 #include "history.h"
 #include "piece.h"
 #include "psqt.h"
 #include "search.h"
-#include "syzygy.h"
 #include "thread.h"
 #include "transposition.h"
 #include "types.h"
@@ -60,7 +58,7 @@ uint16_t getBestMove(Thread* threads, Board* board, Limits* limits){
     // Before searching, check to see if we are in the Syzygy Tablebases. If so
     // the probe will return 1, will initialize the best move, and will report
     // a depth MAX_PLY - 1 search to the interface. If found, we are done here.
-    uint16_t move; if (tablebasesProbeDTZ(board, &move)) return move;
+    // uint16_t move; if (tablebasesProbeDTZ(board, &move)) return move;
 
     // Initialize SearchInfo, used for reporting and time managment logic
     SearchInfo info;
@@ -363,30 +361,30 @@ int search(Thread* thread, PVariation* pv, int alpha, int beta, int depth, int h
     // Step 5. Probe the Syzygy Tablebases. tablebasesProbeWDL() handles all of
     // the conditions about the board, the existance of tables, the probe depth,
     // as well as to not probe at the Root. The return is defined by the Fathom API
-    if ((tbresult = tablebasesProbeWDL(board, depth, height)) != TB_RESULT_FAILED){
+    // if ((tbresult = tablebasesProbeWDL(board, depth, height)) != TB_RESULT_FAILED){
 
-        thread->tbhits++; // Increment tbhits counter for this thread
+    //     thread->tbhits++; // Increment tbhits counter for this thread
 
-        // Convert the WDL value to a score. We consider blessed losses
-        // and cursed wins to be a draw, and thus set value to zero.
-        value = tbresult == TB_LOSS ? -MATE + MAX_PLY + height + 1
-              : tbresult == TB_WIN  ?  MATE - MAX_PLY - height - 1 : 0;
+    //     // Convert the WDL value to a score. We consider blessed losses
+    //     // and cursed wins to be a draw, and thus set value to zero.
+    //     value = tbresult == TB_LOSS ? -MATE + MAX_PLY + height + 1
+    //           : tbresult == TB_WIN  ?  MATE - MAX_PLY - height - 1 : 0;
 
-        // Identify the bound based on WDL scores. For wins and losses the
-        // bound is not exact because we are dependent on the height, but
-        // for draws (and blessed / cursed) we know the tbresult to be exact
-        ttBound = tbresult == TB_LOSS ? BOUND_UPPER
-                : tbresult == TB_WIN  ? BOUND_LOWER : BOUND_EXACT;
+    //     // Identify the bound based on WDL scores. For wins and losses the
+    //     // bound is not exact because we are dependent on the height, but
+    //     // for draws (and blessed / cursed) we know the tbresult to be exact
+    //     ttBound = tbresult == TB_LOSS ? BOUND_UPPER
+    //             : tbresult == TB_WIN  ? BOUND_LOWER : BOUND_EXACT;
 
-        // Check to see if the WDL value would cause a cutoff
-        if (    ttBound == BOUND_EXACT
-            || (ttBound == BOUND_LOWER && value >= beta)
-            || (ttBound == BOUND_UPPER && value <= alpha)){
+    //     // Check to see if the WDL value would cause a cutoff
+    //     if (    ttBound == BOUND_EXACT
+    //         || (ttBound == BOUND_LOWER && value >= beta)
+    //         || (ttBound == BOUND_UPPER && value <= alpha)){
 
-            storeTTEntry(board->hash, NONE_MOVE, value, VALUE_NONE, MAX_PLY-1, ttBound);
-            return value;
-        }
-    }
+    //         storeTTEntry(board->hash, NONE_MOVE, value, VALUE_NONE, MAX_PLY-1, ttBound);
+    //         return value;
+    //     }
+    // }
 
     // Step 6. Initialize flags and values used by pruning and search methods
 

@@ -26,7 +26,6 @@
 #include "attacks.h"
 #include "board.h"
 #include "evaluate.h"
-#include "fathom/tbprobe.h"
 #include "history.h"
 #include "masks.h"
 #include "move.h"
@@ -60,7 +59,7 @@ int main(){
     pthread_t pthreadsgo;
 
     int nthreads =  1;
-    int megabytes = 16;
+    int megabytes = 1;
 
     // Initialize the core components of Ethereal
     initAttacks();
@@ -123,16 +122,6 @@ int main(){
             if (stringStartsWith(str, "setoption name MoveOverhead value ")){
                 MoveOverhead = atoi(str + strlen("setoption name MoveOverhead value "));
                 printf("info string set MoveOverhead to %d\n", MoveOverhead);
-            }
-
-            if (stringStartsWith(str, "setoption name SyzygyPath value ")){
-                ptr = str + strlen("setoption name SyzygyPath value ");
-                tb_init(ptr); printf("info string set SyzygyPath to %s\n", ptr);
-            }
-
-            if (stringStartsWith(str, "setoption name SyzygyProbeDepth value ")){
-                TB_PROBE_DEPTH = atoi(str + strlen("setoption name SyzygyProbeDepth value "));
-                printf("info string set SyzygyProbeDepth to %u\n", TB_PROBE_DEPTH);
             }
 
             fflush(stdout);
@@ -349,9 +338,9 @@ void uciReportTBRoot(uint16_t move, unsigned wdl, unsigned dtz){
 
     int hashfull = hashfullTT();
 
-    int score = wdl == TB_LOSS ? -MATE + MAX_PLY + dtz + 1
-              : wdl == TB_WIN  ?  MATE - MAX_PLY - dtz - 1 : 0;
-
+    // int score = wdl == TB_LOSS ? -MATE + MAX_PLY + dtz + 1
+    //           : wdl == TB_WIN  ?  MATE - MAX_PLY - dtz - 1 : 0;
+    int score = 0;
     printf("info depth %d seldepth %d score cp %d time 0 "
            "nodes 0 tbhits 1 nps 0 hashfull %d pv ",
            MAX_PLY - 1, MAX_PLY - 1, score, hashfull);

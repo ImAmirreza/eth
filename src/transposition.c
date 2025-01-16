@@ -36,14 +36,14 @@ void initTT(uint64_t megabytes) {
     // We set the smallest TT to 1 MB. This is a TT with a lookup
     // key with 15 bits. We start with 16 bits, because the scaling
     // ends by decrementing the key size by 1 bit.
-    uint64_t keySize = 16ull;
+    uint64_t keySize = 10ull;
 
     // Buckets must be 32 bytes for the scaling and for alignment
     assert(sizeof(TTBucket) == 32);
 
     // Scale down the table to the closest power of 2, at or below megabytes
-    for (;1ull << (keySize + 5) <= megabytes << 20 ; keySize++);
-    keySize -= 1;
+    // for (;1ull << (keySize + 5) <= megabytes << 20 ; keySize++);
+    // keySize -= 1;
 
     // Allocate all of our TTBuckets and TTEntries
     Table.buckets = malloc((1ull << keySize) * sizeof(TTBucket));
