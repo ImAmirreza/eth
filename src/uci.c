@@ -43,7 +43,7 @@
 extern int ContemptDrawPenalty;   // Defined by Thread.c
 extern int ContemptComplexity;    // Defined by Thread.c
 extern int MoveOverhead;          // Defined by Time.c
-extern unsigned TB_PROBE_DEPTH;   // Defined by Syzygy.c
+// extern unsigned TB_PROBE_DEPTH;   // Defined by Syzygy.c
 extern volatile int ABORT_SIGNAL; // Defined by Search.c
 extern volatile int IS_PONDERING; // Defined by Search.c
 extern volatile int ANALYSISMODE; // Defined by Search.c
@@ -64,7 +64,7 @@ int main(int argc, char **argv) {
 
     // Initialize core components of Ethereal
     initAttacks(); initMasks(); initEval();
-    initSearch(); initZobrist(); initTT(16);
+    initSearch(); initZobrist(); initTT(1);
     threads = createThreadPool(1);
     boardFromFEN(&board, StartPosition, chess960);
 
@@ -297,15 +297,15 @@ void uciSetOption(char *str, Thread **threads, int *multiPV, int *chess960) {
         printf("info string set MoveOverhead to %d\n", MoveOverhead);
     }
 
-    if (strStartsWith(str, "setoption name SyzygyPath value ")) {
-        char *ptr = str + strlen("setoption name SyzygyPath value ");
-        tb_init(ptr); printf("info string set SyzygyPath to %s\n", ptr);
-    }
+    // if (strStartsWith(str, "setoption name SyzygyPath value ")) {
+    //     char *ptr = str + strlen("setoption name SyzygyPath value ");
+    //     tb_init(ptr); printf("info string set SyzygyPath to %s\n", ptr);
+    // }
 
-    if (strStartsWith(str, "setoption name SyzygyProbeDepth value ")) {
-        TB_PROBE_DEPTH = atoi(str + strlen("setoption name SyzygyProbeDepth value "));
-        printf("info string set SyzygyProbeDepth to %u\n", TB_PROBE_DEPTH);
-    }
+    // if (strStartsWith(str, "setoption name SyzygyProbeDepth value ")) {
+    //     // TB_PROBE_DEPTH = atoi(str + strlen("setoption name SyzygyProbeDepth value "));
+    //     printf("info string set SyzygyProbeDepth to %u\n", TB_PROBE_DEPTH);
+    // }
 
     if (strStartsWith(str, "setoption name AnalysisMode value ")) {
         if (strStartsWith(str, "setoption name AnalysisMode value true"))

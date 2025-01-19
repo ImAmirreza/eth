@@ -23,7 +23,6 @@
 #include "attacks.h"
 #include "bitboards.h"
 #include "board.h"
-#include "evalcache.h"
 #include "evaluate.h"
 #include "masks.h"
 #include "thread.h"
@@ -419,8 +418,8 @@ int evaluateBoard(Thread *thread, Board *board) {
     int phase, factor, eval, pkeval, hashed;
 
     // Check for this evaluation being cached already
-    if (!TRACE && getCachedEvaluation(thread, board, &hashed))
-        return hashed;
+    // if (!TRACE && getCachedEvaluation(thread, board, &hashed))
+    //     return hashed;
 
     initEvalInfo(thread, board, &ei);
     eval   = evaluatePieces(&ei, board);
@@ -443,11 +442,11 @@ int evaluateBoard(Thread *thread, Board *board) {
     // Compute and store an interpolated evaluation from white's POV
     eval = (ScoreMG(eval) * (256 - phase)
          +  ScoreEG(eval) * phase * factor / SCALE_NORMAL) / 256;
-    storeCachedEvaluation(thread, board, eval);
+    // storeCachedEvaluation(thread, board, eval);
 
     // Store a new Pawn King Entry if we did not have one
-    if (!TRACE && ei.pkentry == NULL)
-        storeCachedPawnKingEval(thread, board, ei.passedPawns, pkeval);
+    // if (!TRACE && ei.pkentry == NULL)
+    //     storeCachedPawnKingEval(thread, board, ei.passedPawns, pkeval);
 
     // Factor in the Tempo after interpolation and scaling, so that
     // in the search we can assume that if a null move is made, then
@@ -490,7 +489,7 @@ int evaluatePawns(EvalInfo *ei, Board *board, int colour) {
     ei->kingAttacksCount[THEM] += popcount(attacks);
 
     // Pawn hash holds the rest of the pawn evaluation
-    if (ei->pkentry != NULL) return eval;
+    // if (ei->pkentry != NULL) return eval;
 
     pawns = board->pieces[PAWN];
     myPawns = tempPawns = pawns & board->colours[US];
@@ -908,7 +907,7 @@ int evaluateKings(EvalInfo *ei, Board *board, int colour) {
     }
 
     // Everything else is stored in the Pawn King Table
-    if (ei->pkentry != NULL) return eval;
+    // if (ei->pkentry != NULL) return eval;
 
     // Evaluate based on the number of files between our King and the nearest
     // file-wise pawn. If there is no pawn, kingPawnFileDistance() returns the
@@ -1303,10 +1302,10 @@ void initEvalInfo(Thread *thread, Board *board, EvalInfo *ei) {
     ei->kingAttackersWeight[WHITE] = ei->kingAttackersWeight[BLACK] = 0;
 
     // Try to read a hashed Pawn King Eval. Otherwise, start from scratch
-    ei->pkentry       = getCachedPawnKingEval(thread, board);
-    ei->passedPawns   = ei->pkentry == NULL ? 0ull : ei->pkentry->passed;
-    ei->pkeval[WHITE] = ei->pkentry == NULL ? 0    : ei->pkentry->eval;
-    ei->pkeval[BLACK] = ei->pkentry == NULL ? 0    : 0;
+    // ei->pkentry       = getCachedPawnKingEval(thread, board);
+    ei->passedPawns   =  0ull;
+    ei->pkeval[WHITE] = 0;
+    ei->pkeval[BLACK] = 0;
 }
 
 void initEval() {
