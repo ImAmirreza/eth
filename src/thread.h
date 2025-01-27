@@ -23,7 +23,7 @@
 #include <stdint.h>
 
 #include "board.h"
-#include "network.h"
+// #include "network.h"
 #include "search.h"
 #include "transposition.h"
 #include "types.h"

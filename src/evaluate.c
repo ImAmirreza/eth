@@ -26,8 +26,8 @@
 #include "evaluate.h"
 #include "move.h"
 #include "masks.h"
-#include "network.h"
-#include "nneval.h"
+// #include "network.h"
+// #include "nneval.h"
 #include "thread.h"
 #include "transposition.h"
 #include "types.h"
@@ -454,11 +454,11 @@ int evaluateBoard(Thread *thread, Board *board) {
     eval = evaluatePieces(&ei, board);
 
     pkeval = ei.pkeval[WHITE] - ei.pkeval[BLACK];
-    if (ei.pkentry == NULL)
-        pkeval += computePKNetwork(board);
+    // if (ei.pkentry == NULL)
+    //     pkeval += computePKNetwork(board);
 
     eval += pkeval + board->psqtmat + thread->contempt;
-    eval += evaluateEndgames(board);
+    // eval += evaluateEndgames(board);
     eval += evaluateClosedness(&ei, board);
     eval += evaluateComplexity(&ei, board, eval);
 
