@@ -27,7 +27,6 @@
 #include "board.h"
 #include "cmdline.h"
 #include "evaluate.h"
-#include "pyrrhic/tbprobe.h"
 #include "history.h"
 #include "masks.h"
 #include "move.h"
@@ -45,7 +44,7 @@
 extern int ContemptDrawPenalty;   // Defined by thread.c
 extern int ContemptComplexity;    // Defined by thread.c
 extern int MoveOverhead;          // Defined by time.c
-extern unsigned TB_PROBE_DEPTH;   // Defined by syzygy.c
+// extern unsigned TB_PROBE_DEPTH;   // Defined by syzygy.c
 extern volatile int ABORT_SIGNAL; // Defined by search.c
 extern volatile int IS_PONDERING; // Defined by search.c
 extern volatile int ANALYSISMODE; // Defined by search.c
@@ -67,7 +66,7 @@ int main(int argc, char **argv) {
 
     // Initialize core components of Ethereal
     initAttacks(); initMasks(); initEval();
-    initSearch(); initZobrist(); initTT(16);
+    initSearch(); initZobrist(); initTT(1);
     initPKNetwork(&PKNN); initEndgameNNs();
 
     // Create the UCI-board and our threads
@@ -303,15 +302,15 @@ void uciSetOption(char *str, Thread **threads, int *multiPV, int *chess960) {
         printf("info string set MoveOverhead to %d\n", MoveOverhead);
     }
 
-    if (strStartsWith(str, "setoption name SyzygyPath value ")) {
-        char *ptr = str + strlen("setoption name SyzygyPath value ");
-        tb_init(ptr); printf("info string set SyzygyPath to %s\n", ptr);
-    }
+    // if (strStartsWith(str, "setoption name SyzygyPath value ")) {
+    //     char *ptr = str + strlen("setoption name SyzygyPath value ");
+    //     tb_init(ptr); printf("info string set SyzygyPath to %s\n", ptr);
+    // }
 
-    if (strStartsWith(str, "setoption name SyzygyProbeDepth value ")) {
-        TB_PROBE_DEPTH = atoi(str + strlen("setoption name SyzygyProbeDepth value "));
-        printf("info string set SyzygyProbeDepth to %u\n", TB_PROBE_DEPTH);
-    }
+    // if (strStartsWith(str, "setoption name SyzygyProbeDepth value ")) {
+    //     TB_PROBE_DEPTH = atoi(str + strlen("setoption name SyzygyProbeDepth value "));
+    //     printf("info string set SyzygyProbeDepth to %u\n", TB_PROBE_DEPTH);
+    // }
 
     if (strStartsWith(str, "setoption name AnalysisMode value ")) {
         if (strStartsWith(str, "setoption name AnalysisMode value true"))

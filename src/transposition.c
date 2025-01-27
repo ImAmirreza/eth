@@ -38,21 +38,17 @@ void initTT(uint64_t megabytes) {
 
     // Use a default keysize of 16 bits, which should be equal to
     // the smallest possible hash table size, which is 2 megabytes
-    assert((1ull << 16ull) * sizeof(TTBucket) == 2 * MB);
-    uint64_t keySize = 16ull;
+    // assert((1ull << 16ull) * sizeof(TTBucket) == 2 * MB);
+    uint64_t keySize = 10ull;
 
     // Find the largest keysize that is still within our given megabytes
-    while ((1ull << keySize) * sizeof(TTBucket) <= megabytes * MB / 2) keySize++;
-    assert((1ull << keySize) * sizeof(TTBucket) <= megabytes * MB);
+    // while ((1ull << keySize) * sizeof(TTBucket) <= megabytes * MB / 2) keySize++;
+    // assert((1ull << keySize) * sizeof(TTBucket) <= megabytes * MB);
 
-#if defined(__linux__) && !defined(__ANDROID__)
-    // On Linux systems we align on 2MB boundaries and request Huge Pages
-    Table.buckets = aligned_alloc(2 * MB, (1ull << keySize) * sizeof(TTBucket));
-    madvise(Table.buckets, (1ull << keySize) * sizeof(TTBucket), MADV_HUGEPAGE);
-#else
+
     // Otherwise, we simply allocate as usual and make no requests
     Table.buckets = malloc((1ull << keySize) * sizeof(TTBucket));
-#endif
+
 
     // Save the lookup mask
     Table.hashMask = (1ull << keySize) - 1u;
@@ -93,10 +89,10 @@ int hashfullTT() {
 
     int used = 0;
 
-    for (int i = 0; i < 1000; i++)
-        for (int j = 0; j < TT_BUCKET_NB; j++)
-            used += (Table.buckets[i].slots[j].generation & TT_MASK_BOUND) != BOUND_NONE
-                 && (Table.buckets[i].slots[j].generation & TT_MASK_AGE) == Table.generation;
+    // for (int i = 0; i < 1000; i++)
+    //     for (int j = 0; j < TT_BUCKET_NB; j++)
+    //         used += (Table.buckets[i].slots[j].generation & TT_MASK_BOUND) != BOUND_NONE
+    //              && (Table.buckets[i].slots[j].generation & TT_MASK_AGE) == Table.generation;
 
     return used / TT_BUCKET_NB;
 }

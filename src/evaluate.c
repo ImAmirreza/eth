@@ -23,7 +23,6 @@
 #include "attacks.h"
 #include "bitboards.h"
 #include "board.h"
-#include "evalcache.h"
 #include "evaluate.h"
 #include "move.h"
 #include "masks.h"
@@ -448,8 +447,8 @@ int evaluateBoard(Thread *thread, Board *board) {
         return -thread->evalStack[thread->height-1] + 2 * Tempo;
 
     // Check for this evaluation being cached already
-    if (!TRACE && getCachedEvaluation(thread, board, &hashed))
-        return hashed;
+    // if (!TRACE && getCachedEvaluation(thread, board, &hashed))
+    //     return hashed;
 
     initEvalInfo(thread, board, &ei);
     eval = evaluatePieces(&ei, board);
@@ -475,11 +474,11 @@ int evaluateBoard(Thread *thread, Board *board) {
     // Compute and store an interpolated evaluation from white's POV
     eval = (ScoreMG(eval) * phase
          +  ScoreEG(eval) * (24 - phase) * factor / SCALE_NORMAL) / 24;
-    storeCachedEvaluation(thread, board, eval);
+    // storeCachedEvaluation(thread, board, eval);
 
     // Store a new Pawn King Entry if we did not have one
-    if (!TRACE && ei.pkentry == NULL)
-        storeCachedPawnKingEval(thread, board, ei.passedPawns, pkeval, ei.pksafety[WHITE], ei.pksafety[BLACK]);
+    // if (!TRACE && ei.pkentry == NULL)
+    //     storeCachedPawnKingEval(thread, board, ei.passedPawns, pkeval, ei.pksafety[WHITE], ei.pksafety[BLACK]);
 
     // Factor in the Tempo after interpolation and scaling, so that
     // if a null move is made, then we know eval = last_eval + 2 * Tempo
@@ -525,8 +524,8 @@ int evaluatePawns(EvalInfo *ei, Board *board, int colour) {
     attacks = ei->pawnAttacks[US] & ei->kingAreas[THEM];
     ei->kingAttacksCount[THEM] += popcount(attacks);
 
-    // Pawn hash holds the rest of the pawn evaluation
-    if (ei->pkentry != NULL) return eval;
+    // // Pawn hash holds the rest of the pawn evaluation
+    // if (ei->pkentry != NULL) return eval;
 
     pawns = board->pieces[PAWN];
     myPawns = tempPawns = pawns & board->colours[US];
@@ -856,7 +855,7 @@ int evaluateQueens(EvalInfo *ei, Board *board, int colour) {
 
 int evaluateKingsPawns(EvalInfo *ei, Board *board, int colour) {
     // Skip computations if results are cached in the Pawn King Table
-    if (ei->pkentry != NULL) return 0;
+    // if (ei->pkentry != NULL) return 0;
 
     const int US = colour, THEM = !colour;
 
@@ -1367,12 +1366,12 @@ void initEvalInfo(Thread *thread, Board *board, EvalInfo *ei) {
     ei->kingAttackersWeight[WHITE] = ei->kingAttackersWeight[BLACK] = 0;
 
     // Try to read a hashed Pawn King Eval. Otherwise, start from scratch
-    ei->pkentry         = getCachedPawnKingEval(thread, board);
-    ei->passedPawns     = ei->pkentry == NULL ? 0ull : ei->pkentry->passed;
-    ei->pkeval[WHITE]   = ei->pkentry == NULL ? 0    : ei->pkentry->eval;
-    ei->pkeval[BLACK]   = ei->pkentry == NULL ? 0    : 0;
-    ei->pksafety[WHITE] = ei->pkentry == NULL ? 0    : ei->pkentry->safetyw;
-    ei->pksafety[BLACK] = ei->pkentry == NULL ? 0    : ei->pkentry->safetyb;
+    // ei->pkentry         = getCachedPawnKingEval(thread, board);
+    // ei->passedPawns     = ei->pkentry == NULL ? 0ull : ei->pkentry->passed;
+    // ei->pkeval[WHITE]   = ei->pkentry == NULL ? 0    : ei->pkentry->eval;
+    // ei->pkeval[BLACK]   = ei->pkentry == NULL ? 0    : 0;
+    // ei->pksafety[WHITE] = ei->pkentry == NULL ? 0    : ei->pkentry->safetyw;
+    // ei->pksafety[BLACK] = ei->pkentry == NULL ? 0    : ei->pkentry->safetyb;
 }
 
 void initEval() {
