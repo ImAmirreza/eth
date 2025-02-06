@@ -29,7 +29,7 @@
 #include "transposition.h"
 #include "types.h"
 
-#include "nnue/types.h"
+// #include "nnue/types.h"
 
 enum {
     STACK_OFFSET = 4,
@@ -65,7 +65,7 @@ struct Thread {
     int depth, seldepth, height, completed;
 
     NodeState *states, nodeStates[STACK_SIZE];
-    NNUEAccumulator *nnueStack;
+    // NNUEAccumulator *nnueStack;
     Undo undoStack[STACK_SIZE];
 
     ALIGN64 PKTable pktable;

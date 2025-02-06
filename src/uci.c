@@ -32,7 +32,7 @@
 #include "move.h"
 #include "movegen.h"
 #include "network.h"
-#include "nnue/nnue.h"
+// #include "nnue/nnue.h"
 #include "pyrrhic/tbprobe.h"
 #include "search.h"
 #include "thread.h"
@@ -142,8 +142,9 @@ int main(int argc, char **argv) {
         else if (strEquals(str, "stop"))
             ABORT_SIGNAL = 1, IS_PONDERING = 0;
 
-        else if (strEquals(str, "quit"))
-            break;
+        else if (strEquals(str, "quit")){
+            deleteThreadPool(threads);
+            break;}
 
         else if (strStartsWith(str, "perft"))
             printf("%"PRIu64"\n", perft(&board, atoi(str + strlen("perft ")))), fflush(stdout);
@@ -275,11 +276,11 @@ void uciSetOption(char *str, Thread **threads, int *multiPV, int *chess960) {
         printf("info string set Threads to %d\n", nthreads);
     }
 
-    if (strStartsWith(str, "setoption name EvalFile value ")) {
-        char *ptr = str + strlen("setoption name EvalFile value ");
-        if (!strStartsWith(ptr, "<empty>")) nnue_init(ptr);
-        printf("info string set EvalFile to %s\n", ptr);
-    }
+    // if (strStartsWith(str, "setoption name EvalFile value ")) {
+    //     char *ptr = str + strlen("setoption name EvalFile value ");
+    //     if (!strStartsWith(ptr, "<empty>")) nnue_init(ptr);
+    //     printf("info string set EvalFile to %s\n", ptr);
+    // }
 
     if (strStartsWith(str, "setoption name MultiPV value ")) {
         *multiPV = atoi(str + strlen("setoption name MultiPV value "));

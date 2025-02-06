@@ -26,9 +26,9 @@
 #include "transposition.h"
 #include "types.h"
 
-#include "nnue/types.h"
-#include "nnue/accumulator.h"
-#include "nnue/utils.h"
+// #include "nnue/types.h"
+// #include "nnue/accumulator.h"
+// #include "nnue/utils.h"
 
 Thread* createThreadPool(int nthreads) {
 
@@ -44,7 +44,7 @@ Thread* createThreadPool(int nthreads) {
             threads[i].nodeStates[j].continuations = NULL;
 
         // Must dynamically allocate for the ALIGNs needed
-        threads[i].nnueStack = nnue_create_accumulators();
+        // threads[i].nnueStack = nnue_create_accumulators();
 
         // Threads will know of each other
         threads[i].index = i;
@@ -57,8 +57,8 @@ Thread* createThreadPool(int nthreads) {
 
 void deleteThreadPool(Thread *threads) {
 
-    for (int i = 0; i < threads->nthreads; i++)
-        nnue_delete_accumulators(threads[i].nnueStack);
+    // for (int i = 0; i < threads->nthreads; i++)
+    //     nnue_delete_accumulators(threads[i].nnueStack);
 
     free(threads);
 }
@@ -99,7 +99,7 @@ void newSearchThreadPool(Thread *threads, Board *board, Limits *limits, TimeMana
 
         memcpy(&threads[i].board, board, sizeof(Board));
         threads[i].board.thread = &threads[i];
-        threads[i].nnueStack[0].accurate = 0;
+        // threads[i].nnueStack[0].accurate = 0;
 
         memset(threads[i].nodeStates, 0, sizeof(NodeState) * STACK_SIZE);
     }
