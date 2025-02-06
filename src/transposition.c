@@ -55,28 +55,28 @@ void tt_prefetch(uint64_t hash) { __builtin_prefetch(&Table.buckets[hash & Table
 int tt_init(int nthreads, int megabytes) {
 
     const uint64_t MB = 1ull << 20;
-    uint64_t keySize = 16ull;
+    uint64_t keySize = 10ull;
 
     // Cleanup memory when resizing the table
     if (Table.hashMask) free(Table.buckets);
 
     // Default keysize of 16 bits maps to a 2MB TTable
-    assert((1ull << 16ull) * sizeof(TTBucket) == 2 * MB);
+    // assert((1ull << 16ull) * sizeof(TTBucket) == 2 * MB);
 
-    // Find the largest keysize that is still within our given megabytes
-    while ((1ull << keySize) * sizeof(TTBucket) <= megabytes * MB / 2) keySize++;
-    assert((1ull << keySize) * sizeof(TTBucket) <= megabytes * MB);
+    // // Find the largest keysize that is still within our given megabytes
+    // while ((1ull << keySize) * sizeof(TTBucket) <= megabytes * MB / 2) keySize++;
+    // assert((1ull << keySize) * sizeof(TTBucket) <= megabytes * MB);
 
-#if defined(__linux__) && !defined(__ANDROID__)
+// #if defined(__linux__) && !defined(__ANDROID__)
 
-    // On Linux systems we align on 2MB boundaries and request Huge Pages
-    Table.buckets = aligned_alloc(2 * MB, (1ull << keySize) * sizeof(TTBucket));
-    madvise(Table.buckets, (1ull << keySize) * sizeof(TTBucket), MADV_HUGEPAGE);
-#else
+//     // On Linux systems we align on 2MB boundaries and request Huge Pages
+//     Table.buckets = aligned_alloc(2 * MB, (1ull << keySize) * sizeof(TTBucket));
+//     madvise(Table.buckets, (1ull << keySize) * sizeof(TTBucket), MADV_HUGEPAGE);
+// #else
 
     // Otherwise, we simply allocate as usual and make no requests
     Table.buckets = malloc((1ull << keySize) * sizeof(TTBucket));
-#endif
+// #endif
 
     // Save the lookup mask
     Table.hashMask = (1ull << keySize) - 1u;

@@ -64,8 +64,8 @@ int main(int argc, char **argv) {
 
     // Initialize core components of Ethereal
     initAttacks(); initMasks(); initEval();
-    initSearch(); initZobrist(); tt_init(1, 16);
-    initPKNetwork(&PKNN); nnue_incbin_init();
+    initSearch(); initZobrist(); tt_init(1, 1);
+    initPKNetwork(&PKNN); //nnue_incbin_init();
 
     // Create the UCI-board and our threads
     threads = createThreadPool(1);
@@ -291,16 +291,16 @@ void uciSetOption(char *str, Thread **threads, int *multiPV, int *chess960) {
         printf("info string set MoveOverhead to %d\n", MoveOverhead);
     }
 
-    if (strStartsWith(str, "setoption name SyzygyPath value ")) {
-        char *ptr = str + strlen("setoption name SyzygyPath value ");
-        if (!strStartsWith(ptr, "<empty>")) tb_init(ptr);
-        printf("info string set SyzygyPath to %s\n", ptr);
-    }
+    // if (strStartsWith(str, "setoption name SyzygyPath value ")) {
+    //     char *ptr = str + strlen("setoption name SyzygyPath value ");
+    //     if (!strStartsWith(ptr, "<empty>")) tb_init(ptr);
+    //     printf("info string set SyzygyPath to %s\n", ptr);
+    // }
 
-    if (strStartsWith(str, "setoption name SyzygyProbeDepth value ")) {
-        TB_PROBE_DEPTH = atoi(str + strlen("setoption name SyzygyProbeDepth value "));
-        printf("info string set SyzygyProbeDepth to %u\n", TB_PROBE_DEPTH);
-    }
+    // if (strStartsWith(str, "setoption name SyzygyProbeDepth value ")) {
+    //     TB_PROBE_DEPTH = atoi(str + strlen("setoption name SyzygyProbeDepth value "));
+    //     printf("info string set SyzygyProbeDepth to %u\n", TB_PROBE_DEPTH);
+    // }
 
     if (strStartsWith(str, "setoption name UCI_Chess960 value ")) {
         if (strStartsWith(str, "setoption name UCI_Chess960 value true"))

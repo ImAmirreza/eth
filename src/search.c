@@ -37,7 +37,7 @@
 #include "movegen.h"
 #include "movepicker.h"
 #include "search.h"
-#include "syzygy.h"
+// #include "syzygy.h"
 #include "thread.h"
 #include "timeman.h"
 #include "transposition.h"
@@ -171,8 +171,8 @@ void getBestMove(Thread *threads, Board *board, Limits *limits, uint16_t *best, 
     newSearchThreadPool(threads, board, limits, &tm);
 
     // Allow Syzygy to refine the move list for optimal results
-    if (!limits->limitedByMoves && limits->multiPV == 1)
-        tablebasesProbeDTZ(board, limits);
+    // if (!limits->limitedByMoves && limits->multiPV == 1)
+    //     tablebasesProbeDTZ(board, limits);
 
     // Create a new thread for each of the helpers and reuse the current
     // thread for the main thread, which avoids some overhead and saves
@@ -380,38 +380,38 @@ int search(Thread *thread, PVariation *pv, int alpha, int beta, int depth) {
     // Step 5. Probe the Syzygy Tablebases. tablebasesProbeWDL() handles all of
     // the conditions about the board, the existance of tables, the probe depth,
     // as well as to not probe at the Root. The return is defined by the Pyrrhic API
-    if ((tbresult = tablebasesProbeWDL(board, depth, thread->height)) != TB_RESULT_FAILED) {
+    // if ((tbresult = tablebasesProbeWDL(board, depth, thread->height)) != TB_RESULT_FAILED) {
 
-        thread->tbhits++; // Increment tbhits counter for this thread
+    //     thread->tbhits++; // Increment tbhits counter for this thread
 
-        // Convert the WDL value to a score. We consider blessed losses
-        // and cursed wins to be a draw, and thus set value to zero.
-        value = tbresult == TB_LOSS ? -TBWIN + thread->height
-              : tbresult == TB_WIN  ?  TBWIN - thread->height : 0;
+    //     // Convert the WDL value to a score. We consider blessed losses
+    //     // and cursed wins to be a draw, and thus set value to zero.
+    //     value = tbresult == TB_LOSS ? -TBWIN + thread->height
+    //           : tbresult == TB_WIN  ?  TBWIN - thread->height : 0;
 
-        // Identify the bound based on WDL scores. For wins and losses the
-        // bound is not exact because we are dependent on the height, but
-        // for draws (and blessed / cursed) we know the tbresult to be exact
-        tbBound = tbresult == TB_LOSS ? BOUND_UPPER
-                : tbresult == TB_WIN  ? BOUND_LOWER : BOUND_EXACT;
+    //     // Identify the bound based on WDL scores. For wins and losses the
+    //     // bound is not exact because we are dependent on the height, but
+    //     // for draws (and blessed / cursed) we know the tbresult to be exact
+    //     tbBound = tbresult == TB_LOSS ? BOUND_UPPER
+    //             : tbresult == TB_WIN  ? BOUND_LOWER : BOUND_EXACT;
 
-        // Check to see if the WDL value would cause a cutoff
-        if (    tbBound == BOUND_EXACT
-            || (tbBound == BOUND_LOWER && value >= beta)
-            || (tbBound == BOUND_UPPER && value <= alpha)) {
+    //     // Check to see if the WDL value would cause a cutoff
+    //     if (    tbBound == BOUND_EXACT
+    //         || (tbBound == BOUND_LOWER && value >= beta)
+    //         || (tbBound == BOUND_UPPER && value <= alpha)) {
 
-            tt_store(board->hash, thread->height, NONE_MOVE, value, VALUE_NONE, depth, tbBound);
-            return value;
-        }
+    //         tt_store(board->hash, thread->height, NONE_MOVE, value, VALUE_NONE, depth, tbBound);
+    //         return value;
+    //     }
 
-        // Never score something worse than the known Syzygy value
-        if (PvNode && tbBound == BOUND_LOWER)
-            syzygyMin = value, alpha = MAX(alpha, value);
+    //     // Never score something worse than the known Syzygy value
+    //     if (PvNode && tbBound == BOUND_LOWER)
+    //         syzygyMin = value, alpha = MAX(alpha, value);
 
-        // Never score something better than the known Syzygy value
-        if (PvNode && tbBound == BOUND_UPPER)
-            syzygyMax = value;
-    }
+    //     // Never score something better than the known Syzygy value
+    //     if (PvNode && tbBound == BOUND_UPPER)
+    //         syzygyMax = value;
+    // }
 
     // Step 6. Initialize flags and values used by pruning and search methods
     search_init_goto:

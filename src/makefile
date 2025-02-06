@@ -23,7 +23,7 @@
 ### =========================================================================
 
 CC   = clang
-SRC  = *.c pyrrhic/tbprobe.c
+SRC  = *.c 
 LIBS = -lpthread -lm
 NN   = -DUSE_NNUE=0
 EXE  = Ethereal
@@ -103,7 +103,8 @@ endif
 ### =========================================================================
 ### Section 3. Build Targets Optimized For Native Use
 ### =========================================================================
-
+debug:
+	$(CC) $(WFLAGS) $(SRC) $(NN) $(LIBS) -o $(EXE)
 pgo:
 	rm -f *.gcda pyrrhic/*.gcda nnue/*.gcda *.profdata *.profraw
 	$(CC) $(PGOGEN) $(CFLAGS) $(PGOFLAGS) $(SRC) $(LIBS) -o $(EXE)
