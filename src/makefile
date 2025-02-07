@@ -22,7 +22,7 @@
 ### Section 1. Flag Declarations. Detect NNUE/Classic and Release/Native
 ### =========================================================================
 
-CC   = clang
+CC   = gcc
 SRC  = *.c 
 LIBS = -lpthread -lm
 NN   = -DUSE_NNUE=0
