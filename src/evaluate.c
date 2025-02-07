@@ -458,7 +458,7 @@ int evaluateBoard(Thread *thread, Board *board) {
         eval = evaluatePieces(&ei, board);
 
         pkeval = ei.pkeval[WHITE] - ei.pkeval[BLACK];
-        if (ei.pkentry == NULL) pkeval += computePKNetwork(board);
+        // if (ei.pkentry == NULL) pkeval += computePKNetwork(board);
 
         eval += pkeval + board->psqtmat;
         eval += evaluateClosedness(&ei, board);
